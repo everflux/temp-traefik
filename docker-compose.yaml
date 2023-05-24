@@ -23,6 +23,6 @@ services:
       - "./tls:/tls"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
       - "traefik.http.routers.dashboard.entrypoints=https"
       - "traefik.http.routers.dashboard.service=api@internal"
