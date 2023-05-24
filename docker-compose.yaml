@@ -25,4 +25,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
       - "traefik.http.routers.dashboard.entrypoints=https"
-      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-https.service=traefik-https"
+      - "traefik.http.routers.traefik-https.tls=true"
+      - "traefik.http.services.traefik-https.loadbalancer.server.port=8080"
