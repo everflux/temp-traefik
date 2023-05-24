@@ -25,8 +25,43 @@ services:
       - "./tls:/etc/ssl/traefik"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
-      - "traefik.http.routers.dashboard.entrypoints=https"
+      - "traefik.http.routers.traefik-https.rule=Host(`traefik.traefik.me`)"
+      - "traefik.http.routers.traefik-https.entrypoints=https"
       - "traefik.http.routers.traefik-https.service=traefik-https"
       - "traefik.http.routers.traefik-https.tls=true"
       - "traefik.http.services.traefik-https.loadbalancer.server.port=8080"
+
+
+
+
+# keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_DB: dev-file
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      PROXY_ADDRESS_FORWARDING: "true"
+      KC_HTTP_PORT: 9090
+      KC_PROXY: edge
+      KC_FEATURES: recovery-codes
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=HostRegexp(`{subdomain:^keycloak(-[\\d-]+)?}.traefik.me`)"
+      - "traefik.http.routers.keycloak.entrypoints=https"
+      - "traefik.http.routers.keycloak.tls=true"
+
+      #mtls config
+      - "traefik.http.routers.mtls-keycloak.rule=Host(`mtls-keycloak.traefik.me`)"
+      # - "traefik.http.routers.mtls-keycloak.rule=HostRegexp(`{subdomain:^mtls-keycloak(-[\\d-]+)?}.traefik.me`)"
+      - "traefik.http.routers.mtls-keycloak.entrypoints=https"
+      - "traefik.http.routers.mtls-keycloak.service=keycloak@docker"
+      - "traefik.http.routers.mtls-keycloak.tls.options=mtls@file"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=9090"
+    command:
+    - start-dev
+    - "--import-realm"
+    # volumes:
+    # - ./keycloak/import:/opt/keycloak/data/import
+    ports:
+      - 9090:9090
