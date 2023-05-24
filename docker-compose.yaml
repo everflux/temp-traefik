@@ -17,6 +17,8 @@ services:
       - "--entrypoints.https.address=:443"
       - "--entrypoints.http.http.redirections.entryPoint.to=https"
       - "--entrypoints.http.http.redirections.entryPoint.scheme=https"
+      - "--providers.file.filename=/etc/ssl/traefik/tls.yml" # dynamic config
+
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./letsencrypt:/letsencrypt"
