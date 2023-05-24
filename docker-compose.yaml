@@ -1,15 +1,14 @@
 version: "3.1"
 services:
   traefik:
-    image: traefik
+    image: traefik:v2.10
     ports:
       - "80:80"
       - "443:443"
     command:
-      - "--log.level=INFO"
+      - "--log.level=DEBUG"
       - "--accesslog"
-      - "--api"
-      - "--api.dashboard"
+      - "--api.dashboard=true"
       - "--api.insecure=false"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
